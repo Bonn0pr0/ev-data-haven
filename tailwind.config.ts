@@ -13,7 +13,7 @@ export default {
       },
     },
     extend: {
-      colors: {
+        colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -47,6 +47,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // EV marketplace colors
+        electric: {
+          blue: "hsl(var(--electric-blue))",
+          green: "hsl(var(--electric-green))",
+          purple: "hsl(var(--electric-purple))",
+        },
+        data: {
+          orange: "hsl(var(--data-orange))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -57,6 +66,18 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      backgroundImage: {
+        "gradient-primary": "var(--gradient-primary)",
+        "gradient-secondary": "var(--gradient-secondary)",
+        "gradient-data": "var(--gradient-data)",
+      },
+      boxShadow: {
+        "electric": "var(--shadow-electric)",
+        "card-custom": "var(--shadow-card)",
+      },
+      transitionTimingFunction: {
+        "smooth": "var(--transition-smooth)",
       },
       borderRadius: {
         lg: "var(--radius)",
