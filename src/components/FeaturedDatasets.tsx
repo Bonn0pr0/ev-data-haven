@@ -1,10 +1,15 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Download, Eye, Calendar } from "lucide-react";
+import DatasetDetailModal from "@/components/DatasetDetailModal";
+import { toast } from "sonner";
 
 const datasets = [
   {
+    id: 1,
     title: "Tesla Model 3 Performance Dataset",
     description: "Dữ liệu hiệu suất chi tiết từ 10,000+ xe Tesla Model 3 trong 2 năm vận hành",
     provider: "Tesla Research Lab",
@@ -17,6 +22,7 @@ const datasets = [
     featured: true
   },
   {
+    id: 2,
     title: "Global EV Charging Network Data",
     description: "Thông tin về 50,000+ trạm sạc xe điện trên toàn thế giới với dữ liệu thời gian thực",
     provider: "ChargePoint Analytics",
@@ -29,6 +35,7 @@ const datasets = [
     featured: false
   },
   {
+    id: 3,
     title: "EV Battery Health Prediction",
     description: "Mô hình AI dự đoán tuổi thọ pin với độ chính xác 95% dựa trên 100K+ mẫu dữ liệu",
     provider: "BatteryTech AI",
@@ -43,6 +50,20 @@ const datasets = [
 ];
 
 const FeaturedDatasets = () => {
+  const [selectedDataset, setSelectedDataset] = useState<typeof datasets[0] | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleViewDetails = (dataset: typeof datasets[0]) => {
+    setSelectedDataset(dataset);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleViewAllDatasets = () => {
+    navigate('/market');
+    toast.success("Xem tất cả datasets có sẵn!");
+  };
+
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
@@ -117,7 +138,11 @@ const FeaturedDatasets = () => {
                   <div>
                     <span className="text-lg font-bold text-foreground">{dataset.price}</span>
                   </div>
-                  <Button size="sm" className="bg-gradient-primary hover:opacity-90">
+                  <Button 
+                    size="sm" 
+                    className="bg-gradient-primary hover:opacity-90"
+                    onClick={() => handleViewDetails(dataset)}
+                  >
                     Xem Chi Tiết
                   </Button>
                 </div>
@@ -127,11 +152,22 @@ const FeaturedDatasets = () => {
         </div>
         
         <div className="text-center mt-12">
-          <Button variant="outline" size="lg" className="text-lg px-8 py-6">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="text-lg px-8 py-6"
+            onClick={handleViewAllDatasets}
+          >
             Xem Tất Cả Datasets
           </Button>
         </div>
       </div>
+      
+      <DatasetDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        dataset={selectedDataset}
+      />
     </section>
   );
 };
