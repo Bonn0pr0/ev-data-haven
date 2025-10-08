@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Lock, User, Github } from "lucide-react";
+import { Mail, Lock, User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -12,22 +14,37 @@ interface LoginModalProps {
 }
 
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
+  const navigate = useNavigate();
+  const { signIn, signUp } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login:", { email, password });
-    onClose();
+    setLoading(true);
+    
+    const { error } = await signIn(email, password);
+    
+    setLoading(false);
+    if (!error) {
+      onClose();
+      navigate("/user");
+    }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle register logic here
-    console.log("Register:", { name, email, password });
-    onClose();
+    setLoading(true);
+    
+    const { error } = await signUp(email, password, name);
+    
+    setLoading(false);
+    if (!error) {
+      onClose();
+      navigate("/user");
+    }
   };
 
   return (
@@ -82,30 +99,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90">
-                Đăng Nhập
+              <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90" disabled={loading}>
+                {loading ? "Đang xử lý..." : "Đăng Nhập"}
               </Button>
             </form>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Hoặc tiếp tục với</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="w-full">
-                <Github className="mr-2 h-4 w-4" />
-                Github
-              </Button>
-              <Button variant="outline" className="w-full">
-                <Mail className="mr-2 h-4 w-4" />
-                Google
-              </Button>
-            </div>
           </TabsContent>
 
           <TabsContent value="register" className="space-y-4">
@@ -158,30 +155,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90">
-                Tạo Tài Khoản
+              <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90" disabled={loading}>
+                {loading ? "Đang xử lý..." : "Tạo Tài Khoản"}
               </Button>
             </form>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Hoặc đăng ký với</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="w-full">
-                <Github className="mr-2 h-4 w-4" />
-                Github
-              </Button>
-              <Button variant="outline" className="w-full">
-                <Mail className="mr-2 h-4 w-4" />
-                Google
-              </Button>
-            </div>
           </TabsContent>
         </Tabs>
       </DialogContent>
